@@ -1,3 +1,11 @@
+# build todoapp
+FROM maven:3.9.2-eclipse-temurin-20 AS app-build
+
+COPY src /usr/src/app/src
+COPY pom.xml /usr/src/app
+
+RUN mvn -f /usr/src/app/pom.xml clean package
+
 # Example of custom Java runtime using jlink in a multi-stage container build
 FROM openjdk:20-jdk-oraclelinux8 as jre-build
 
@@ -20,7 +28,7 @@ ENV PATH $JAVA_HOME/bin:$PATH
 COPY --from=jre-build /javaruntime $JAVA_HOME
 
 # Continue with your application deployment
-COPY ./target/spring-todo-app.jar /app.jar
+COPY --from=app-build /usr/src/app/target/spring-todo-app.jar /app.jar
 COPY entrypoint.sh /entrypoint.sh
 COPY myprofile.jfc myprofile.jfc
 
