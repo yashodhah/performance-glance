@@ -2,3 +2,4 @@ jlink
 jimage
 jstat
 jmap
+jcmd - available memory
